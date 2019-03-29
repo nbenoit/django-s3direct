@@ -65,6 +65,9 @@ def create_upload_data(content_type, key, acl, bucket=None, cache_control=None,
     bucket = bucket or settings.AWS_STORAGE_BUCKET_NAME
     region = getattr(settings, 'S3DIRECT_REGION', None)
     endpoint = getattr(settings, 'AWS_S3_HOST') or REGIONS.get(region, 's3.amazonaws.com')
+    port = getattr(settings, 'AWS_S3_PORT') or 443
+    if (port != 80) and (port != 443):
+        endpoint = '%s:%d' % (endpoint,port)
 
     expires_in = datetime.utcnow() + timedelta(seconds=60*5)
     expires = expires_in.strftime('%Y-%m-%dT%H:%M:%S.000Z')
